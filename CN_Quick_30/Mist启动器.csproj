@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <UseWindowsForms>True</UseWindowsForms>
+    <BaseOutputPath>bin\$(MSBuildProjectName)</BaseOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ModelDirectory>models</ModelDirectory>
+    <DeployDirectory>run</DeployDirectory>
+    <RunDirectory>$(DeployDirectory)\$(MSBuildProjectName)</RunDirectory>
+    <ApplicationIcon>ico\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <RemoveDir Directories="$(RunDirectory)" />
+    <MakeDir Directories="$(RunDirectory)" />
+      <ItemGroup>
+        <MySourceFiles Include="$(OutDir)**\*.*" />
+        <MySourceFiles Include="$(ModelDirectory)\**\*.*" />
+      </ItemGroup>
+    <Copy SourceFiles="@(MySourceFiles)" DestinationFolder="$(RunDirectory)\%(RecursiveDir)" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Remove="run\**" />
+    <EmbeddedResource Remove="run\**" />
+    <None Remove="run\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ico\icon.ico" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
